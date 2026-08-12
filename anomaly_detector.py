@@ -6,7 +6,7 @@ df = pd.read_excel("Dataset.xlsx")
 # Display first 5 rows
 print(df)
 
-
+# heloo
 # Dynamic handle for column naming ('Conversion' vs 'Conversion Rate')
 conv_col = "Conversion" if "Conversion" in df.columns else "Conversion Rate"
 
