@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from scipy.stats import zscore
 from sklearn.ensemble import IsolationForest
+from llm_explainer import generate_ai_summary
 
 # ============================================================
 # CONFIG
@@ -533,6 +534,10 @@ print(
 # DETAILED REPORT
 # ============================================================
 
+# ============================================================
+# DETAILED REPORT + AI BUSINESS SUMMARY
+# ============================================================
+
 for index, row in anomalies.iterrows():
 
     print("\n")
@@ -540,21 +545,33 @@ for index, row in anomalies.iterrows():
     print("🚨 ANOMALY DETECTED")
     print("=" * 70)
 
-    print(
-        "Date:",
-        row["Date"]
-    )
+    # --------------------------------------------------------
+    # DATE
+    # --------------------------------------------------------
 
-    print("\nBusiness Values:")
+    print("Date:", row["Date"])
+
+
+    # --------------------------------------------------------
+    # BUSINESS VALUES
+    # --------------------------------------------------------
+
+    business_values = {}
 
     for metric_name, real_col in COLUMN_MAP.items():
 
         value = row[real_col]
 
+        business_values[metric_name] = value
+
         print(
             f"{metric_name:<15}: {value}"
         )
 
+
+    # --------------------------------------------------------
+    # STATISTICAL DETECTION
+    # --------------------------------------------------------
 
     print("\nStatistical Detection:")
 
@@ -580,6 +597,10 @@ for index, row in anomalies.iterrows():
     )
 
 
+    # --------------------------------------------------------
+    # ISOLATION FOREST SCORE
+    # --------------------------------------------------------
+
     print("\nIsolation Forest Score:")
 
     print(
@@ -589,6 +610,10 @@ for index, row in anomalies.iterrows():
         )
     )
 
+
+    # --------------------------------------------------------
+    # BUSINESS RULE
+    # --------------------------------------------------------
 
     print("\nBusiness Rule:")
 
@@ -600,51 +625,124 @@ for index, row in anomalies.iterrows():
 
             for metric_name in METRIC_RULES
 
-            if row[
-                f"{metric_name}_Status"
-            ]
+            if row[f"{metric_name}_Status"]
             == "Negative/Suspicious"
 
         ]
 
-        print(
-            "🚨 Business Issue"
+        business_rule_status = "🚨 Business Issue"
+
+        caused_by = ", ".join(
+            triggered_metrics
         )
+
+        print("🚨 Business Issue")
 
         print(
             "Caused by:",
-            ", ".join(
-                triggered_metrics
-            )
+            caused_by
         )
 
     else:
+
+        business_rule_status = (
+            "✅ No business-rule issue"
+        )
+
+        caused_by = "None"
 
         print(
             "✅ No business-rule issue"
         )
 
 
-# ============================================================
-# SAVE COMPLETE RESULT
-# ============================================================
+    # ========================================================
+    # GEMINI AI SUMMARY
+    # ========================================================
 
-output_file = (
-    "Anomaly_Detection_Result.xlsx"
-)
+    print("\n🤖 Generating AI Business Summary...")
 
-df.to_excel(
-    output_file,
-    index=False
-)
+    ai_summary = generate_ai_summary(
+
+        # ----------------------------------------------------
+        # DATE
+        # ----------------------------------------------------
+
+        date=row["Date"],
 
 
-print("\n")
-print("=" * 70)
-print("✅ COMPLETE")
-print("=" * 70)
+        # ----------------------------------------------------
+        # REAL BUSINESS VALUES
+        # ----------------------------------------------------
 
-print(
-    "Result saved as:",
-    output_file
-)
+        business_values=business_values,
+
+
+        # ----------------------------------------------------
+        # Z-SCORE
+        # ----------------------------------------------------
+
+        zscore_status=(
+            "🚨 Anomaly"
+            if row["ZScore_Anomaly"]
+            else "Normal"
+        ),
+
+
+        # ----------------------------------------------------
+        # IQR
+        # ----------------------------------------------------
+
+        iqr_status=(
+            "🚨 Anomaly"
+            if row["IQR_Anomaly"]
+            else "Normal"
+        ),
+
+
+        # ----------------------------------------------------
+        # ISOLATION FOREST
+        # ----------------------------------------------------
+
+        isolation_forest_status=(
+            "🚨 Anomaly"
+            if row["IF_Anomaly"]
+            else "Normal"
+        ),
+
+
+        # ----------------------------------------------------
+        # ISOLATION FOREST SCORE
+        # ----------------------------------------------------
+
+        isolation_forest_score=round(
+            row["IF_Anomaly_Score"],
+            4
+        ),
+
+
+        # ----------------------------------------------------
+        # BUSINESS RULE
+        # ----------------------------------------------------
+
+        business_rule_status=(
+            business_rule_status
+        ),
+
+        caused_by=caused_by
+    )
+
+
+    # ========================================================
+    # DISPLAY AI SUMMARY
+    # ========================================================
+
+    print("\n" + "_" * 60)
+
+    print("🤖 AI BUSINESS SUMMARY:")
+
+    print("_" * 60)
+
+    print(ai_summary)
+
+    print("_" * 60)
