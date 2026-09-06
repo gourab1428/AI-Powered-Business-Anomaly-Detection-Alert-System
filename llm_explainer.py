@@ -1,29 +1,22 @@
 # import os
-
-# from google import genai
-# from google.genai import types
+# import requests
 
 
 # # ============================================================
 # # GEMINI API CONFIGURATION
 # # ============================================================
 
-# api_key = os.getenv("GEMINI_API_KEY")
+# API_KEY = os.getenv("GEMINI_API_KEY")
 
-# if not api_key:
+# if not API_KEY:
 #     raise ValueError(
 #         "GEMINI_API_KEY not found.\n"
-#         "Please set your Google AI Studio API key first."
+#         "Please set your Google AI Studio API key."
 #     )
 
 
-# client = genai.Client(
-#     api_key=api_key
-# )
-
-
 # # ============================================================
-# # FUNCTION: GENERATE AI BUSINESS SUMMARY
+# # GEMINI AI SUMMARY FUNCTION
 # # ============================================================
 
 # def generate_ai_summary(
@@ -37,81 +30,66 @@
 #     caused_by
 # ):
 
-#     # --------------------------------------------------------
-#     # PROMPT
-#     # --------------------------------------------------------
-
 #     prompt = f"""
 # You are an experienced business data analyst.
 
-# Your job is to explain a detected business-data anomaly
-# to a manager in simple and professional language.
+# A separate anomaly detection system has already detected
+# a suspicious business-data record.
+
+# Your job is ONLY to explain the detected anomaly
+# to a business manager.
 
 # IMPORTANT RULES:
 
-# 1. Do NOT detect an anomaly yourself.
-#    The detection has already been done by the statistical
-#    and business-rule system.
+# 1. Do NOT perform anomaly detection yourself.
 
-# 2. Use ONLY the information provided below.
+# 2. Use ONLY the information provided.
 
 # 3. Do NOT invent facts.
 
-# 4. Do NOT claim a specific cause unless the data proves it.
+# 4. Do NOT change the detection result.
 
-# 5. If you mention a possible cause, use:
+# 5. Do NOT claim a specific cause unless the data proves it.
+
+# 6. If suggesting a possible cause, use:
 #    "may indicate",
 #    "could indicate",
 #    or
 #    "may be related to".
 
-# 6. Explain:
-
-#    - What changed?
-#    - Which metrics are concerning?
-#    - Why could this matter to the business?
+# 7. Explain:
+#    - What is unusual?
+#    - Which metric is concerning?
+#    - Why could this matter?
 #    - What should the manager investigate?
 
-# 7. Keep the answer between 60 and 100 words.
+# 8. Keep the summary between 60 and 100 words.
 
-# 8. Use simple and professional business language.
+# 9. Use simple professional business language.
 
-# 9. Do not explain Z-score, IQR, or Isolation Forest
-#    in detail.
+# 10. Do not explain the technical algorithms.
 
-# 10. Focus on the business meaning.
+# Generate ONLY the business summary.
 
-# ------------------------------------------------------------
-# ANOMALY INFORMATION
-# ------------------------------------------------------------
+# ============================================================
+# DETECTED ANOMALY
+# ============================================================
 
 # Date:
 # {date}
 
-# Business Values:
+# BUSINESS VALUES:
 
-# Revenue:
-# {business_values["Revenue"]}
+# Revenue: {business_values["Revenue"]}
+# Orders: {business_values["Orders"]}
+# Traffic: {business_values["Traffic"]}
+# Conversion: {business_values["Conversion"]}
+# Cost: {business_values["Cost"]}
+# Refunds: {business_values["Refunds"]}
 
-# Orders:
-# {business_values["Orders"]}
-
-# Traffic:
-# {business_values["Traffic"]}
-
-# Conversion:
-# {business_values["Conversion"]}
-
-# Cost:
-# {business_values["Cost"]}
-
-# Refunds:
-# {business_values["Refunds"]}
-
-
-# ------------------------------------------------------------
-# STATISTICAL DETECTION
-# ------------------------------------------------------------
+# ============================================================
+# DETECTION RESULTS
+# ============================================================
 
 # Z-Score:
 # {zscore_status}
@@ -125,159 +103,107 @@
 # Isolation Forest Score:
 # {isolation_forest_score}
 
-
-# ------------------------------------------------------------
-# BUSINESS RULE
-# ------------------------------------------------------------
-
 # Business Rule:
 # {business_rule_status}
 
 # Caused By:
 # {caused_by}
 
+# ============================================================
 
-# ------------------------------------------------------------
-
-# Generate ONLY the AI business summary.
-
-# Do not add a title.
-# Do not repeat the input data.
+# Generate the business summary now.
 # """
 
 
-#     # --------------------------------------------------------
-#     # SEND REQUEST TO GEMINI
-#     # --------------------------------------------------------
+#     # ========================================================
+#     # GEMINI API
+#     # ========================================================
 
-#     try:
+#     url = (
+#         "https://generativelanguage.googleapis.com/"
+#         "v1beta/models/gemini-3.6-flash:generateContent"
+#     )
 
-#             # SEND REQUEST TO GEMINI
-#     # --------------------------------------------------
+#     headers = {
+#         "x-goog-api-key": API_KEY,
+#         "Content-Type": "application/json"
+#     }
 
-#         print("🎤 Sending request to Gemini...")
-
-#         response = client.models.generate_content(
-#             model="gemini-3.7-flash",
-#             contents=prompt
-#         )
-
-#         print("✅ Response received from Gemini.")
-
-#         if response.text:
-#             return response.text.strip()
-
-#         return "Gemini returned an empty response."
-
-#     except Exception as e:
-#         return f"Gemini error: {e}"
-
-#     # --------------------------------------------------
-#     # GET AI RESPONSE
-#     # --------------------------------------------------
-
-#         # ----------------------------------------------------
-#         # GET AI RESPONSE
-#         # ----------------------------------------------------
-
-#         if response.text:
-
-#             return response.text.strip()
-
-#         else:
-
-#             return (
-#                 "AI summary could not be generated: "
-#                 "Gemini returned an empty response."
-#             )
-
-
-#     except Exception as e:
-
-#         return (
-#             f"AI summary could not be generated:\n{e}"
-#         )
-
-
-# # ============================================================
-# # DIRECT TEST
-# # ============================================================
-
-# if __name__ == "__main__":
-
-#     print("\n" + "=" * 60)
-#     print("🤖 GEMINI LLM EXPLAINER TEST")
-#     print("=" * 60)
-
-
-#     # --------------------------------------------------------
-#     # SAMPLE ANOMALY DATA
-#     # --------------------------------------------------------
-
-#     test_values = {
-
-#         "Revenue": 17745.0,
-
-#         "Orders": 127.0,
-
-#         "Traffic": 4000.0,
-
-#         "Conversion": 3.175,
-
-#         "Cost": 47000.0,
-
-#         "Refunds": 3500.0
-
+#     data = {
+#         "contents": [
+#             {
+#                 "parts": [
+#                     {
+#                         "text": prompt
+#                     }
+#                 ]
+#             }
+#         ]
 #     }
 
 
-#     # --------------------------------------------------------
-#     # SEND TEST DATA TO GEMINI
-#     # --------------------------------------------------------
+#     # ========================================================
+#     # SEND REQUEST
+#     # ========================================================
 
-#     summary = generate_ai_summary(
+#     try:
 
-#         date="2026-08-17 00:00:00",
+#         print("📡 Sending anomaly to Gemini...")
 
-#         business_values=test_values,
-
-#         zscore_status="Normal",
-
-#         iqr_status="🚨 Anomaly",
-
-#         isolation_forest_status="Normal",
-
-#         isolation_forest_score=0.0258,
-
-#         business_rule_status="🚨 Business Issue",
-
-#         caused_by="Revenue"
-#     )
+#         response = requests.post(
+#             url,
+#             headers=headers,
+#             json=data,
+#             timeout=30
+#         )
 
 
-#     # --------------------------------------------------------
-#     # DISPLAY AI RESULT
-#     # --------------------------------------------------------
+#         # ----------------------------------------------------
+#         # CHECK API
+#         # ----------------------------------------------------
 
-#     print("\n🤖 AI BUSINESS SUMMARY:")
+#         if response.status_code != 200:
 
-#     print("-" * 60)
+#             return (
+#                 "Gemini API Error:\n"
+#                 + response.text
+#             )
 
-#     print(summary)
 
-#     print("-" * 60)
+#         # ----------------------------------------------------
+#         # READ RESPONSE
+#         # ----------------------------------------------------
 
-#     print("✅ GEMINI TEST COMPLETED")
+#         result = response.json()
 
-#     print("=" * 60)
+
+#         # ----------------------------------------------------
+#         # EXTRACT AI SUMMARY
+#         # ----------------------------------------------------
+
+#         summary = (
+#             result["candidates"][0]
+#             ["content"]
+#             ["parts"][0]
+#             ["text"]
+#         )
+
+
+#         return summary.strip()
+
+
+#     except requests.exceptions.Timeout:
+
+#         return "Gemini request timed out."
+
+
+#     except Exception as e:
+
+#         return f"Gemini error: {e}"
 
 import os
+import time
 import requests
-
-
-# ============================================================
-# GEMINI API CONFIGURATION
-# ============================================================
 
 API_KEY = os.getenv("GEMINI_API_KEY")
 
@@ -287,10 +213,6 @@ if not API_KEY:
         "Please set your Google AI Studio API key."
     )
 
-
-# ============================================================
-# GEMINI FUNCTION
-# ============================================================
 
 def generate_ai_summary(
     date,
@@ -306,27 +228,37 @@ def generate_ai_summary(
     prompt = f"""
 You are an experienced business data analyst.
 
-Explain this detected business anomaly to a manager.
+A separate anomaly detection system has already detected
+a suspicious business-data record.
 
-Use simple and professional language.
+Your job is ONLY to explain the detected anomaly
+to a business manager.
 
-Rules:
+IMPORTANT RULES:
 
-- Do not perform anomaly detection yourself.
-- Use only the information provided.
-- Do not invent facts.
-- Do not claim a specific cause unless the data proves it.
-- If suggesting a possible cause, use "may indicate",
-  "could indicate", or "may be related to".
-- Explain what changed.
-- Explain which metrics are concerning.
-- Explain why it may matter.
-- Explain what the manager should investigate.
-- Keep the answer between 60 and 100 words.
-- Do not explain Z-score, IQR, or Isolation Forest.
-- Generate only the business summary.
+1. Do NOT perform anomaly detection yourself.
+2. Use ONLY the information provided.
+3. Do NOT invent facts.
+4. Do NOT change the detection result.
+5. Do NOT claim a specific cause unless the data proves it.
+6. If suggesting a possible cause, use:
+   "may indicate", "could indicate", or "may be related to".
+7. Explain:
+   - What is unusual?
+   - Which metric is concerning?
+   - Why could this matter?
+   - What should the manager investigate?
+8. Keep the summary between 60 and 100 words.
+9. Use simple professional business language.
+10. Do not explain the technical algorithms.
 
-DATE:
+Generate ONLY the business summary.
+
+============================================================
+DETECTED ANOMALY
+============================================================
+
+Date:
 {date}
 
 BUSINESS VALUES:
@@ -338,29 +270,36 @@ Conversion: {business_values["Conversion"]}
 Cost: {business_values["Cost"]}
 Refunds: {business_values["Refunds"]}
 
-STATISTICAL DETECTION:
+============================================================
+DETECTION RESULTS
+============================================================
 
-Z-Score: {zscore_status}
-IQR: {iqr_status}
-Isolation Forest: {isolation_forest_status}
-Isolation Forest Score: {isolation_forest_score}
+Z-Score:
+{zscore_status}
 
-BUSINESS RULE:
+IQR:
+{iqr_status}
 
+Isolation Forest:
+{isolation_forest_status}
+
+Isolation Forest Score:
+{isolation_forest_score}
+
+Business Rule:
 {business_rule_status}
 
 Caused By:
 {caused_by}
+
+============================================================
+
+Generate the business summary now.
 """
-
-
-    # ========================================================
-    # GEMINI REST API
-    # ========================================================
 
     url = (
         "https://generativelanguage.googleapis.com/"
-        "v1beta/interactions"
+        "v1beta/models/gemini-3.6-flash:generateContent"
     )
 
     headers = {
@@ -369,162 +308,154 @@ Caused By:
     }
 
     data = {
-        "model": "gemini-3.6-flash",
-        "input": prompt
+        "contents": [
+            {
+                "parts": [
+                    {
+                        "text": prompt
+                    }
+                ]
+            }
+        ]
     }
 
+    # ============================================
+    # GEMINI REQUEST WITH RETRY
+    # ============================================
 
-    try:
+    max_retries = 3
 
-        print("📡 Sending request directly to Gemini...")
+    for attempt in range(1, max_retries + 1):
 
-        response = requests.post(
-            url,
-            headers=headers,
-            json=data,
-            timeout=30
-        )
+        try:
 
-        print(
-            "HTTP Status:",
-            response.status_code
-        )
+            print(
+                f"📡 Sending anomaly to Gemini "
+                f"(attempt {attempt}/{max_retries})..."
+            )
 
+            response = requests.post(
+                url,
+                headers=headers,
+                json=data,
+                timeout=90
+            )
 
-        # ----------------------------------------------------
-        # CHECK API ERROR
-        # ----------------------------------------------------
+            # ------------------------------------
+            # SUCCESS
+            # ------------------------------------
 
-        if response.status_code != 200:
+            if response.status_code == 200:
+
+                result = response.json()
+
+                summary = (
+                    result["candidates"][0]
+                    ["content"]
+                    ["parts"][0]
+                    ["text"]
+                )
+
+                return summary.strip()
+
+            # ------------------------------------
+            # TEMPORARY ERRORS
+            # ------------------------------------
+
+            if response.status_code in [408, 429, 500, 502, 503, 504]:
+
+                print(
+                    f"⚠️ Gemini temporary error: "
+                    f"HTTP {response.status_code}"
+                )
+
+                if attempt < max_retries:
+
+                    wait_time = 2 ** attempt
+
+                    print(
+                        f"⏳ Retrying in "
+                        f"{wait_time} seconds..."
+                    )
+
+                    time.sleep(wait_time)
+
+                    continue
+
+                return (
+                    f"Gemini request failed after "
+                    f"{max_retries} attempts. "
+                    f"HTTP {response.status_code}"
+                )
+
+            # ------------------------------------
+            # OTHER API ERRORS
+            # ------------------------------------
 
             return (
                 "Gemini API Error:\n"
                 + response.text
             )
 
+        # ----------------------------------------
+        # TIMEOUT
+        # ----------------------------------------
 
-        # ----------------------------------------------------
-        # READ RESPONSE
-        # ----------------------------------------------------
+        except requests.exceptions.Timeout:
 
-        result = response.json()
+            print(
+                f"⏰ Gemini request timed out "
+                f"(attempt {attempt}/{max_retries})"
+            )
 
+            if attempt < max_retries:
 
-        # ----------------------------------------------------
-        # GET OUTPUT TEXT
-        # ----------------------------------------------------
+                wait_time = 2 ** attempt
 
-        output_text = result.get(
-            "output_text"
-        )
+                print(
+                    f"⏳ Retrying in "
+                    f"{wait_time} seconds..."
+                )
 
+                time.sleep(wait_time)
 
-        if output_text:
+            else:
 
-            return output_text.strip()
+                return (
+                    "Gemini request timed out "
+                    f"after {max_retries} attempts."
+                )
 
+        # ----------------------------------------
+        # CONNECTION ERROR
+        # ----------------------------------------
 
-        # ----------------------------------------------------
-        # FALLBACK: READ STEPS
-        # ----------------------------------------------------
+        except requests.exceptions.ConnectionError as e:
 
-        for step in result.get(
-            "steps",
-            []
-        ):
+            print(
+                "🌐 Connection error while "
+                "connecting to Gemini."
+            )
 
-            if step.get("type") == "model_output":
+            if attempt < max_retries:
 
-                for content in step.get(
-                    "content",
-                    []
-                ):
+                wait_time = 2 ** attempt
 
-                    if content.get(
-                        "type"
-                    ) == "text":
+                print(
+                    f"⏳ Retrying in "
+                    f"{wait_time} seconds..."
+                )
 
-                        return content.get(
-                            "text",
-                            ""
-                        ).strip()
+                time.sleep(wait_time)
 
+            else:
 
-        return "Gemini returned an empty response."
+                return f"Gemini connection error: {e}"
 
+        # ----------------------------------------
+        # OTHER ERROR
+        # ----------------------------------------
 
-    except requests.exceptions.Timeout:
+        except Exception as e:
 
-        return (
-            "Gemini request timed out after 30 seconds."
-        )
-
-
-    except Exception as e:
-
-        return f"Gemini connection error: {e}"
-
-
-# ============================================================
-# DIRECT TEST
-# ============================================================
-
-if __name__ == "__main__":
-
-    print("=" * 60)
-    print("🤖 GEMINI LLM EXPLAINER TEST")
-    print("=" * 60)
-
-
-    test_values = {
-
-        "Revenue": 17745.0,
-
-        "Orders": 127.0,
-
-        "Traffic": 4000.0,
-
-        "Conversion": 3.175,
-
-        "Cost": 47000.0,
-
-        "Refunds": 3500.0
-    }
-
-
-    print("\n📊 Test anomaly loaded.")
-
-
-    summary = generate_ai_summary(
-
-        date="2026-08-17 00:00:00",
-
-        business_values=test_values,
-
-        zscore_status="Normal",
-
-        iqr_status="🚨 Anomaly",
-
-        isolation_forest_status="Normal",
-
-        isolation_forest_score=0.0258,
-
-        business_rule_status="🚨 Business Issue",
-
-        caused_by="Revenue"
-    )
-
-
-    print("\n" + "=" * 60)
-
-    print("🤖 AI BUSINESS SUMMARY")
-
-    print("=" * 60)
-
-    print(summary)
-
-    print("=" * 60)
-
-    print("✅ TEST FINISHED")
-
-    print("=" * 60)
+            return f"Gemini error: {e}"
