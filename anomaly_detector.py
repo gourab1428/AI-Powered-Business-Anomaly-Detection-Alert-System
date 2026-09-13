@@ -1,10 +1,9 @@
-
 import pandas as pd
 import numpy as np
 from scipy.stats import zscore
 from sklearn.ensemble import IsolationForest
 from llm_explainer import generate_ai_summary
-
+from email_alert import send_anomaly_email
 # ============================================================
 # CONFIG
 # ============================================================
@@ -655,7 +654,6 @@ for index, row in anomalies.iterrows():
             "✅ No business-rule issue"
         )
 
-
     # ========================================================
     # GEMINI AI SUMMARY
     # ========================================================
@@ -746,3 +744,90 @@ for index, row in anomalies.iterrows():
     print(ai_summary)
 
     print("_" * 60)
+
+
+    # ========================================================
+    # SEND EMAIL ALERT
+    # ========================================================
+
+    print("\n📧 Sending Email Alert...")
+
+    send_anomaly_email(
+
+        # ----------------------------------------------------
+        # DATE
+        # ----------------------------------------------------
+
+        date=row["Date"],
+
+
+        # ----------------------------------------------------
+        # REAL BUSINESS VALUES
+        # ----------------------------------------------------
+
+        business_values=business_values,
+
+
+        # ----------------------------------------------------
+        # Z-SCORE
+        # ----------------------------------------------------
+
+        zscore_status=(
+            "🚨 Anomaly"
+            if row["ZScore_Anomaly"]
+            else "Normal"
+        ),
+
+
+        # ----------------------------------------------------
+        # IQR
+        # ----------------------------------------------------
+
+        iqr_status=(
+            "🚨 Anomaly"
+            if row["IQR_Anomaly"]
+            else "Normal"
+        ),
+
+
+        # ----------------------------------------------------
+        # ISOLATION FOREST
+        # ----------------------------------------------------
+
+        isolation_forest_status=(
+            "🚨 Anomaly"
+            if row["IF_Anomaly"]
+            else "Normal"
+        ),
+
+
+        # ----------------------------------------------------
+        # ISOLATION FOREST SCORE
+        # ----------------------------------------------------
+
+        isolation_forest_score=round(
+            row["IF_Anomaly_Score"],
+            4
+        ),
+
+
+        # ----------------------------------------------------
+        # BUSINESS RULE
+        # ----------------------------------------------------
+
+        business_rule_status=business_rule_status,
+
+
+        # ----------------------------------------------------
+        # DETECTED CAUSE
+        # ----------------------------------------------------
+
+        caused_by=caused_by,
+
+
+        # ----------------------------------------------------
+        # GEMINI AI SUMMARY
+        # ----------------------------------------------------
+
+        ai_summary=ai_summary
+    )
