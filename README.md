@@ -1,4 +1,4 @@
-# 🤖 AI-Powered Business Anomaly Detection & Alert System
+# AI-Powered Business Anomaly Detection & Alert System
 
 > An end-to-end Business Analytics and AI automation system that detects unusual business performance using statistical analysis, machine learning, and business rules, generates an AI-powered business explanation using Google Gemini, and automatically sends anomaly alerts through Gmail.
 
@@ -40,7 +40,7 @@ Multiple Recipients
 
 ---
 
-# 🎯 Objectives
+# Objectives
 
 The main objectives of this project are:
 
@@ -54,7 +54,7 @@ The main objectives of this project are:
 
 ---
 
-# ❗ Problem Statement
+#  Problem Statement
 
 Traditional business monitoring often requires analysts or managers to manually inspect spreadsheets, dashboards, or reports.
 
@@ -77,7 +77,7 @@ This project addresses these requirements by combining automated anomaly detecti
 
 ---
 
-# 🏗️ System Architecture
+#  System Architecture
 
 ```text
 ┌─────────────────────────────┐
@@ -145,7 +145,7 @@ This project addresses these requirements by combining automated anomaly detecti
 
 ---
 
-# 📊 Dataset
+#  Dataset
 
 The current project uses:
 
@@ -179,7 +179,7 @@ Conversion Rate
 
 ---
 
-# 📈 Business Metrics
+#  Business Metrics
 
 | Metric | Description | Business Context |
 |---|---|---|
@@ -193,7 +193,7 @@ Conversion Rate
 
 ---
 
-# 🔍 Anomaly Detection Methodology
+#  Anomaly Detection Methodology
 
 The project uses four complementary approaches.
 
@@ -339,7 +339,7 @@ These rules provide business context instead of treating every numerical change 
 
 ---
 
-# 🚨 Final Anomaly Logic
+#  Final Anomaly Logic
 
 The project combines statistical and business-rule results.
 
@@ -373,7 +373,7 @@ Therefore, an observation can become a final anomaly because:
 
 ---
 
-# 🤖 Generative AI Layer
+#  Generative AI Layer
 
 After the Python pipeline identifies an anomaly, the detected information is passed to Google Gemini.
 
@@ -415,7 +415,7 @@ Gemini then generates a concise business-oriented explanation.
 
 ---
 
-# 🔐 Important AI Design Principle
+#  Important AI Design Principle
 
 The LLM does **not** independently decide whether an observation is anomalous.
 
@@ -451,7 +451,7 @@ This keeps the anomaly decision in the analytical pipeline while using the LLM f
 
 ---
 
-# 📝 AI Prompt Design
+# AI Prompt Design
 
 The Gemini prompt is designed to:
 
@@ -477,7 +477,7 @@ This is important because an anomaly detector can identify an unusual pattern, b
 
 ---
 
-# 📧 Automated Email Alert System
+# Automated Email Alert System
 
 Once the AI summary is generated, the project automatically sends an email using Gmail SMTP.
 
@@ -524,7 +524,7 @@ This allows the same anomaly report to be delivered to multiple stakeholders.
 
 ---
 
-# 🔄 Complete Project Workflow
+# Complete Project Workflow
 
 ### Step 1 — Load Data
 
@@ -658,7 +658,7 @@ pip install -r requirements.txt
 
 ---
 
-# ⚙️ Installation
+# Installation
 
 ## 1. Clone the Repository
 
@@ -680,7 +680,7 @@ pip install -r requirements.txt
 
 ---
 
-# 🔑 Environment Variables
+# Environment Variables
 
 The project requires:
 
@@ -716,7 +716,7 @@ python anomaly_detector.py
 
 ---
 
-# ▶️ Running the Project
+# Running the Project
 
 After configuring the required environment variables:
 
@@ -752,7 +752,7 @@ Alert Delivered
 
 ---
 
-# 🔒 Security
+# Security
 
 Never commit API keys or passwords to GitHub.
 
@@ -777,7 +777,7 @@ For Gmail authentication, use a Google App Password where applicable instead of 
 
 ---
 
-# 📊 Example Detection Result
+# Example Detection Result
 
 During testing, the system identified five final anomaly dates:
 
@@ -793,7 +793,7 @@ These observations were identified using the project's combined anomaly-detectio
 
 ---
 
-# 🔎 Example Detected Observation
+# Example Detected Observation
 
 One detected observation contained:
 
@@ -814,7 +814,7 @@ The detected information was then provided to Gemini for a business-oriented exp
 
 ---
 
-# 🤖 Example AI Business Summary
+#  Example AI Business Summary
 
 A Gemini-generated summary can follow a structure such as:
 
@@ -832,7 +832,7 @@ factors to determine what contributed to the unusual result.
 
 ---
 
-# 📧 Example Email Alert
+# Example Email Alert
 
 ```text
 🚨 BUSINESS ANOMALY ALERT
@@ -870,7 +870,7 @@ Caused By: Revenue
 
 ---
 
-# 🧪 End-to-End Testing
+# End-to-End Testing
 
 The project has been tested through the complete workflow:
 
@@ -899,7 +899,7 @@ The working implementation has demonstrated:
 
 ---
 
-# 💡 Why Use Multiple Detection Methods?
+#  Why Use Multiple Detection Methods?
 
 A single anomaly detection method may not capture every type of unusual business behavior.
 
@@ -933,7 +933,7 @@ Combining these approaches creates a broader anomaly detection pipeline.
 
 ---
 
-# 🎯 Key Features
+#  Key Features
 
 ### 📊 Automated Data Analysis
 
@@ -982,7 +982,7 @@ Monitor:
 - Refunds
 - Business costs
 
-## 📢 Digital Marketing
+##  Digital Marketing
 
 Monitor:
 
@@ -992,7 +992,7 @@ Monitor:
 - Revenue
 - Customer acquisition metrics
 
-## 💰 Financial Analytics
+##  Financial Analytics
 
 Monitor:
 
@@ -1002,7 +1002,7 @@ Monitor:
 - Refunds
 - Financial KPIs
 
-## 🏢 Business Operations
+##  Business Operations
 
 Monitor:
 
@@ -1014,7 +1014,7 @@ Monitor:
 
 ---
 
-# ⚠️ Limitations
+#  Limitations
 
 The current implementation is a working prototype and has several limitations.
 
@@ -1055,9 +1055,9 @@ The AI summary should therefore be treated as an analytical interpretation rathe
 
 ---
 
-# 🔮 Future Improvements
+#  Future Improvements
 
-## 📊 1. Interactive Dashboard
+##  1. Interactive Dashboard
 
 Build a Streamlit dashboard containing:
 
@@ -1071,7 +1071,7 @@ Build a Streamlit dashboard containing:
 - Anomaly history
 - AI explanations
 
-## 🗄️ 2. Database Integration
+##  2. Database Integration
 
 Replace Excel with:
 
@@ -1082,7 +1082,7 @@ SQL Server
 Cloud Database
 ```
 
-## ⏱️ 3. Scheduled Monitoring
+##  3. Scheduled Monitoring
 
 Automatically execute the anomaly pipeline:
 
@@ -1094,7 +1094,7 @@ Weekly
 
 depending on business requirements.
 
-## ☁️ 4. Cloud Deployment
+##  4. Cloud Deployment
 
 Deploy the system using:
 
@@ -1104,7 +1104,7 @@ Microsoft Azure
 Google Cloud
 ```
 
-## 🔔 5. Additional Alert Channels
+##  5. Additional Alert Channels
 
 Future versions could support:
 
@@ -1115,7 +1115,7 @@ Microsoft Teams
 SMS
 ```
 
-## 🧠 6. Advanced Anomaly Detection
+##  6. Advanced Anomaly Detection
 
 Future versions could include:
 
@@ -1128,7 +1128,7 @@ Clustering
 Advanced Isolation Forest tuning
 ```
 
-## 📚 7. Historical Anomaly Database
+##  7. Historical Anomaly Database
 
 Store anomaly results for:
 
@@ -1140,7 +1140,7 @@ Store anomaly results for:
 
 ---
 
-# 🚀 Future Production Architecture
+#  Future Production Architecture
 
 ```text
               ┌───────────────────┐
@@ -1193,7 +1193,7 @@ Store anomaly results for:
 
 ---
 
-# 📈 Skills Demonstrated
+#  Skills Demonstrated
 
 ## Python
 
@@ -1249,7 +1249,7 @@ Store anomaly results for:
 
 ---
 
-# 💼 Resume Project Description
+#  Resume Project Description
 
 ### AI-Powered Business Anomaly Detection & Alert System
 
@@ -1257,13 +1257,13 @@ Developed an automated business anomaly detection pipeline using Python, Z-score
 
 ---
 
-# 🎤 Interview Explanation
+#  Interview Explanation
 
 > "I developed an AI-powered business anomaly detection system that combines statistical analysis, machine learning, business rules, generative AI, and email automation. The system reads business data from Excel and analyzes revenue, orders, traffic, conversion, cost, and refunds. I used Z-score, IQR, and Isolation Forest for anomaly detection and added business-specific percentage-change rules. Once an anomaly is detected, the information is sent to Google Gemini, which generates a business-friendly explanation. Finally, the system automatically sends the anomaly report and AI summary to multiple recipients through Gmail SMTP."
 
 ---
 
-# 🏁 Conclusion
+#  Conclusion
 
 The **AI-Powered Business Anomaly Detection & Alert System** demonstrates how traditional data analytics, machine learning, business logic, generative AI, and automation can be combined into a single end-to-end workflow.
 
